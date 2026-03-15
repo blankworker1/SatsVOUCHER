@@ -1,20 +1,24 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
 
-# Run and deploy your AI Studio app
+## SatsVOUCHER 
 
-This contains everything you need to run your app locally.
+Bitcoin Lightning Network voucher management app — a point-of-sale-style tool for generating, printing, and tracking redeemable Bitcoin vouchers via LNURL-withdraw. The stack is React on the frontend, Cloudflare Worker handling Lightning wallet integration via the Blink API.
 
-View your app in AI Studio: https://ai.studio/apps/f0e0d74f-6ba8-454c-a00a-defb19112edb
+Here's the architecture at a glance:
 
-## Run Locally
+Cloudflare Worker — what it needs to do (and nothing else)
+Three endpoints, total:
 
-**Prerequisites:**  Node.js
+POST /voucher — create a voucher, store in KV, return the LNURL string
+GET /lnurlw/:id — serve the LNURL-withdraw info JSON to the customer's wallet
+GET /lnurlw/callback/:id — validate k1, call Blink to pay, mark voucher claimed
 
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+Secrets go in Worker environment variables: BLINK_API_KEY, BLINK_WALLET_ID, WORKER_SECRET (a shared key the APK uses to authenticate its requests to the worker).
+Sunmi app — what it actually needs to do
+Stripping it back to its real job as a POS terminal:
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 0.25s;
+    animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+  }
+VvisualizeVvisualize show_widget
