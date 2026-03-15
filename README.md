@@ -13,12 +13,20 @@ GET /lnurlw/:id — serve the LNURL-withdraw info JSON to the customer's wallet
 GET /lnurlw/callback/:id — validate k1, call Blink to pay, mark voucher claimed
 
 Secrets go in Worker environment variables: BLINK_API_KEY, BLINK_WALLET_ID, WORKER_SECRET (a shared key the APK uses to authenticate its requests to the worker).
-Sunmi app — what it actually needs to do
-Stripping it back to its real job as a POS terminal:
-  ::view-transition-group(*),
-  ::view-transition-old(*),
-  ::view-transition-new(*) {
-    animation-duration: 0.25s;
-    animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
-  }
-VvisualizeVvisualize show_widget
+
+
+Sats Voucher backend: Cloudflare Worker
+Three endpoints, ~80 lines of TypeScript total. KV namespace for persistence. Secrets via wrangler secret. Done.
+
+Sunmi V2S Android POS terminal: React Native app
+Three screens for the PoC:
+SaleScreen     — numeric keypad, currency display, BTC equivalent, "Print Voucher" button
+ConfirmScreen  — shows voucher ID + QR preview, triggers Sunmi print, "Done" returns to sale
+SettingsScreen — Worker URL, Worker secret, stored in AsyncStorage
+The printer service will output a receipt with: store name, amount in fiat + BTC, the LNURL QR code, voucher ID, and date. That's all the customer needs to redeem.
+The BTC price fetches from CoinGecko's free public API on app start and refreshes every 5 minutes. No API key needed.
+
+
+
+
+
