@@ -227,7 +227,7 @@ The NFC bridge infrastructure (`/nfc/poll` and `/nfc/write`) is already implemen
 
 ### Admin Dashboard Improvements
 
-The current dashboard (`SatsDashboard` repo) shows treasury balance and basic voucher list. V2 additions planned:
+The current dashboard [`SatsDashboard` repo](https://github.com/blankworker1/SatsDashboard) shows treasury balance and basic voucher list. V2 additions planned:
 
 - Fiat amount and expiry date columns
 - Status filter tabs (all / active / claimed / expired)
