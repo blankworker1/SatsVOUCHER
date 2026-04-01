@@ -1,1 +1,101 @@
-test
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SatsVoucher Admin Dashboard</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0a0a0a; color: white; padding: 40px; display: flex; flex-direction: column; align-items: center; }
+        .container { max-width: 800px; width: 100%; }
+        h1 { color: #ffd000; margin-bottom: 30px; text-align: center; }
+        .card { background: #111; padding: 25px; border-radius: 15px; margin-bottom: 25px; border: 1px solid #222; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .treasury-title { color: #888; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+        #balance-val { font-size: 3rem; margin: 0; font-weight: bold; }
+        
+        /* Low Balance Alert Style */
+        .alert { background: #330000; border-color: #ff4444; }
+        .alert #balance-val { color: #ff4444; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; color: #555; padding: 12px; border-bottom: 2px solid #222; font-size: 0.8rem; }
+        td { padding: 15px 12px; border-bottom: 1px solid #1a1a1a; font-family: monospace; }
+        .status-active { color: #ffd000; font-weight: bold; }
+        .status-claimed { color: #00cc44; font-weight: bold; }
+        .refresh-tag { font-size: 0.7rem; color: #444; text-align: center; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SatsVoucher Admin</h1>
+        
+        <div id="balance-card" class="card">
+            <div class="treasury-title">Treasury Balance</div>
+            <h2 id="balance-val">Loading...</h2>
+        </div>
+
+        <div class="card">
+            <div class="treasury-title">Recent Voucher History</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>AMOUNT (BTC)</th>
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+                <tbody id="voucher-list">
+                    <tr><td colspan="3" style="text-align:center; color:#444;">Fetching data...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="refresh-tag">Auto-refreshing every 30 seconds</div>
+    </div>
+
+    <script>
+        // YOUR WORKER URL
+        const WORKER_URL = "https://satsvoucher-worker.bosaland.workers.dev";
+
+        async function updateDashboard() {
+            try {
+                // 1. Fetch Balance
+                const bRes = await fetch(`${WORKER_URL}/treasury`);
+                const bData = await bRes.json();
+                document.getElementById('balance-val').innerText = bData.balance.toLocaleString() + " Sats";
+                
+                // Trigger Alert if balance is low (< 5000)
+                const card = document.getElementById('balance-card');
+                if (bData.balance < 5000) {
+                    card.classList.add('alert');
+                } else {
+                    card.classList.remove('alert');
+                }
+
+                // 2. Fetch Vouchers
+                const vRes = await fetch(`${WORKER_URL}/vouchers`);
+                const vData = await vRes.json();
+                const list = document.getElementById('voucher-list');
+                
+                if (vData.length === 0) {
+                    list.innerHTML = '<tr><td colspan="3" style="text-align:center;">No vouchers found.</td></tr>';
+                } else {
+                    list.innerHTML = vData.map(v => `
+                        <tr>
+                            <td>${v.id}</td>
+                            <td>${v.amountBtc}</td>
+                            <td class="status-${v.status}">${v.status.toUpperCase()}</td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error("Dashboard error:", err);
+            }
+        }
+
+        // Run on load
+        updateDashboard();
+        // Update every 30 seconds
+        setInterval(updateDashboard, 30000);
+    </script>
+</body>
+</html>
