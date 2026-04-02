@@ -59,9 +59,9 @@ The web app runs inside the Bridge APK's WebView on the Sunmi, or in any browser
 
 ---
 
-## The Three Web Apps
+## The Web Apps
 
-All three apps are served by the same Worker. They share no navigation links — each is accessed directly by URL or QR code.
+All apps are served by the same Worker. They share no navigation links — each is accessed directly by URL or QR code.
 
 ### 1. Merchant App — `/app`
 
@@ -97,6 +97,25 @@ Shows:
 - Store name polled from latest voucher in KV
 
 Default access code: `1928` (hardcoded, change in Worker before production)
+
+### 4. Demo — `/demo`
+
+A read-only preview of the merchant sale screen, accessible from any browser without a terminal or Bridge APK. Intended for prospective merchants evaluating the platform before onboarding.
+
+**What it shows:**
+- The full sale screen keypad with live BTC price feed
+- The SatsVoucher UI and layout at actual scale
+
+**What is disabled:**
+- Print Voucher button — permanently disabled, labelled "Demo Mode"
+- History and Settings navigation — not accessible from demo
+- No API calls of any kind — nothing is written to KV
+
+**What it is not:**
+- Not connected to any live wallet or voucher system
+- Not a simulation — the keypad works but no voucher is ever created
+
+> **Merchant onboarding will be available after the current public trial is complete.** If you are interested in running SatsVoucher at your location, watch this space.
 
 ---
 
