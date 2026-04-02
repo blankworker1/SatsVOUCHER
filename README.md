@@ -257,8 +257,19 @@ The bridge uses the **Sunmi PrinterX SDK** (`com.sunmi:printerx:1.0.14`) rather 
 
 QR codes are generated as ZXing bitmaps in Kotlin and printed via `lineApi.printBitmap()`, bypassing the firmware's built-in QR renderer which crashed on certain input strings.
 
-### Building
+### First Launch Setup
 
+On first launch the app shows a setup prompt asking for your Cloudflare Worker URL.
+Enter your deployed Worker URL in the format:
+```
+https://yourname.workers.dev/app
+```
+
+The URL is saved to SharedPreferences and loaded automatically on every subsequent
+launch. To change it later, long-press the back button on the Sunmi and confirm reset.
+
+---
+### Building
 ```bash
 # Prerequisites: Android Studio, JDK 17, USB debugging enabled on Sunmi
 # Open SatsVoucherBridge/ in Android Studio
@@ -266,6 +277,12 @@ QR codes are generated as ZXing bitmaps in Kotlin and printed via `lineApi.print
 
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 ```
+
+No code changes required before building. The Worker URL is configured
+at runtime on first launch — not hardcoded in the source.
+```
+
+---
 
 ### Dependencies
 
