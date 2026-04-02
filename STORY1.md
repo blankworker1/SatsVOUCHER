@@ -27,6 +27,7 @@ The Blink API does the heavy lifting on the payment side — the Worker calls Bl
 The terminal is a **Sunmi V2S** — an Android POS device with a built-in 58mm thermal printer and NFC reader. It is widely used in retail across Europe and Asia. The web app runs inside a custom Android bridge APK that exposes the printer to the web app via a localhost HTTP API. The merchant never installs anything — the web app is served directly from the Cloudflare Worker.
 
 ![SatsVoucher running on a Sunmi V2S POS terminal](assets/photo1.jpg)
+
 *The SatsVOUCHER merchant app running on the Sunmi V2S. The keypad is the entire sale interface — enter the amount, hand the device to the customer.*
 
 ---
@@ -40,6 +41,7 @@ The Worker generates a unique voucher ID, creates a 4-digit PIN hashed with SHA-
 The confirm screen loads and is handed to the customer.
 
 ![First voucher created for €1 of sats showing the 4-digit PIN](assets/photo2.jpg)
+
 *The first production voucher — €1.00 of sats. The 4-digit PIN is displayed once on screen. It is never printed on the receipt. The customer writes it on the back themselves.*
 
 ---
@@ -49,6 +51,7 @@ The confirm screen loads and is handed to the customer.
 The customer taps **Print Receipt**. The Sunmi thermal printer produces a receipt with the voucher amount, issue and expiry dates, voucher ID, and a QR code pointing to the verification page at `/v/{id}`. The PIN is deliberately absent from the printed receipt — only the customer who saw the screen knows it.
 
 ![Closeup of the first printed SatsVoucher receipt](assets/photo3.jpg)
+
 *The first printed voucher. QR code, voucher ID, dates, amount. Clean and simple — exactly what you would expect from a gift card.*
 
 ---
@@ -58,6 +61,7 @@ The customer taps **Print Receipt**. The Sunmi thermal printer produces a receip
 This is an important design decision. The QR code on the receipt does **not** encode a Lightning invoice or LNURL-withdraw directly. If you scan it with a Lightning wallet, nothing happens.
 
 ![The printed voucher cannot be redeemed directly with a Lightning wallet](assets/photo4.jpg)
+
 *Scanning the printed QR with a Lightning wallet does nothing. The QR points to the verification page, not a payment request. This is intentional.*
 
 The reason is security. A printed LNURL-withdraw is a bearer instrument with no protection — anyone who photographs the receipt could drain the funds. SatsVOUCHER requires the 4-digit PIN before the LNURL is ever created. The LNURL-withdraw is generated on demand at the moment of redemption, exposed exactly once, and never stored.
@@ -69,16 +73,19 @@ The reason is security. A printed LNURL-withdraw is a bearer instrument with no 
 Scanning the QR code with any phone camera opens the verification page in the browser. No app, no account, no friction. The page shows the voucher status, amount, and expiry date. Two buttons: **Transfer** and **Redeem**.
 
 ![Scan the QR code on the voucher to open the verification page](assets/photo5.jpg)
+
 *Scan the QR with any phone camera. The verification page opens instantly in the browser. Voucher status, amount, expiry — all live from KV.*
 
 Tapping **Redeem** opens a PIN entry screen. The customer enters their 4-digit PIN. Three failed attempts triggers a 24-hour lockout. The PIN is verified against the stored hash on the Worker — never transmitted in plain text.
 
 ![Enter the 4-digit PIN to redeem the voucher](assets/photo6.jpg)
+
 *4-digit PIN entry. Max 3 attempts. 24-hour lockout on failure. The PIN never leaves the device in plain text — it is hashed client-side before verification.*
 
 On a correct PIN, the Worker calls the Blink API to create an LNURL-withdraw request. The QR is displayed once. A prominent warning reminds the customer this is a one-time event — save it before closing.
 
 ![Enter correct PIN to reveal the LNURL-withdraw QR code](assets/photo7.jpg)
+
 *The redemption QR revealed. One time only. The customer saves it to their device using the download button — standard Android download manager handles it cleanly.*
 
 ---
@@ -88,6 +95,7 @@ On a correct PIN, the Worker calls the Blink API to create an LNURL-withdraw req
 The customer opens their Blink wallet and taps **Scan**. They scan the saved QR from their photos.
 
 ![Open Blink wallet, select Scan, scan the saved voucher QR code](assets/photo8.jpg)
+
 *Blink recognises the LNURL-withdraw instantly. A new screen opens showing the amount available to redeem. One tap — Redeem Bitcoin.*
 
 ---
@@ -97,9 +105,11 @@ The customer opens their Blink wallet and taps **Scan**. They scan the saved QR 
 The funds arrive in the Blink wallet in seconds. The voucher status in KV updates to **Redeemed** via the LNURL-withdraw callback. The verification page reflects the new status immediately.
 
 ![Voucher redeemed successfully](assets/photo9.jpg)
+
 *Redeemed. The Lightning payment settles in seconds. The voucher is now permanently marked as redeemed in KV — it cannot be used again.*
 
 ![Check wallet transactions to confirm funds received](assets/photo10.jpg)
+
 *The transaction appears in the Blink wallet history. €1.00 of sats received. First production voucher — complete.*
 
 ---
