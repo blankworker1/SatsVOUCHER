@@ -219,7 +219,7 @@ crons = ["0 0 * * *"]
 
 ## Android Bridge APK
 
-Android Studio project at `SatsVoucherBridge/`
+Android Studio project at [SatsVoucherBridge](https://github.com/blankworker1/SatsVoucherBridge)
 
 Runs as a foreground service on the Sunmi V2S. Binds to the Sunmi PrinterX SDK and exposes the thermal printer via a localhost HTTP API on port 8765. The web app detects the bridge automatically — if unreachable, the app continues working without print functionality.
 
