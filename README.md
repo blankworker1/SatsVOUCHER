@@ -257,6 +257,7 @@ The bridge uses the **Sunmi PrinterX SDK** (`com.sunmi:printerx:1.0.14`) rather 
 
 QR codes are generated as ZXing bitmaps in Kotlin and printed via `lineApi.printBitmap()`, bypassing the firmware's built-in QR renderer which crashed on certain input strings.
 
+---
 ### First Launch Setup
 
 On first launch the app shows a setup prompt asking for your Cloudflare Worker URL.
