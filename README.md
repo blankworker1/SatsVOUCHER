@@ -305,7 +305,7 @@ The web app layout is optimised for the Sunmi's logical resolution. Multiple Sun
 ### Customer steps
 1. Receive printed receipt — QR code and voucher ID
 2. Write PIN on the back (PIN shown on screen at time of purchase)
-3. Scan QR code with phone camera to verify voucher is active
+3. To **verify**: scan QR code with phone camera to verify voucher is active
 4. To **transfer**: tap Transfer, enter PIN, set new PIN for recipient
 5. To **redeem**: tap Redeem, enter PIN, save the revealed QR, open in Lightning wallet
 6. Bitcoin arrives in seconds — voucher status updates to Redeemed
